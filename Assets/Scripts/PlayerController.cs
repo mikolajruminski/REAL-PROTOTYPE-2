@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     private bool doubleJump;
+    private float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
 
     //dashing
     bool isDashing;
@@ -48,7 +50,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDashing) 
+        if (isDashing)
         {
             return;
         }
@@ -73,26 +75,34 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if (isGrounded() && !Input.GetButton("Jump"))
+        if (isGrounded())
         {
+            coyoteTimeCounter = coyoteTime;
+            doubleJump = true;
+
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump") && coyoteTimeCounter > 0f)
+        {
+            playerRB.velocity = new Vector2(playerRB.velocity.x, jumpingPower);
+        }
+
+        if (Input.GetButtonDown("Jump") && !isGrounded() && doubleJump)
+        {
+            playerRB.velocity = new Vector2(playerRB.velocity.x, jumpingPower);
             doubleJump = false;
         }
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (isGrounded() || doubleJump)
-            {
-                playerRB.velocity = new Vector2(playerRB.velocity.x, jumpingPower);
-
-                doubleJump = !doubleJump;
-            }
-
-        }
 
         if (Input.GetButtonUp("Jump") && playerRB.velocity.y > 0f)
 
         {
             playerRB.velocity = new Vector2(playerRB.velocity.x, jumpingPower * 0.5f);
+            coyoteTimeCounter = 0f;
         }
     }
 
