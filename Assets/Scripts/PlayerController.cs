@@ -6,18 +6,29 @@ public class PlayerController : MonoBehaviour
 {
     float horizontal;
     [SerializeField] float speed = 12f;
+    float originalSpeed = 12f;
+    float crouchSpeedModifier = 6f;
     [SerializeField] float jumpingPower = 16f;
     private bool isFacingRight = true;
     [SerializeField] Rigidbody2D playerRB;
     [SerializeField] private Transform groundCheck;
+    [SerializeField] Transform overheadCheckColldier;
     [SerializeField] private LayerMask groundLayer;
+    Animator animator;
 
+    //Crouching
+
+    [SerializeField] Collider2D standingCollider;
+    public bool isCrouching = false;
+
+    //double jump coyote time
     private bool doubleJump;
     private float coyoteTime = 0.2f;
     private float coyoteTimeCounter;
 
     //dashing
     bool isDashing;
+    bool longJump = false;
     bool canDash = true;
     [SerializeField] private float dashingPower = 24f;
     [SerializeField] private float dashingDuration = 0.2f;
@@ -27,7 +38,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -38,14 +49,31 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        animator.SetFloat("JumpingVelocity", playerRB.velocity.y);
+        Debug.Log(playerRB.velocity.y);
         horizontal = Input.GetAxisRaw("Horizontal");
+        animator.SetFloat("Horizontal input", horizontal);
+        isMoving();
         Flip();
         Jump();
+        Crouch();
 
         if (canDash && Input.GetKeyDown(KeyCode.LeftShift))
         {
             StartCoroutine(Dash());
         }
+
+        if (isCrouching)
+        {
+            standingCollider.enabled = false;
+            speed = crouchSpeedModifier;
+        }
+        else
+        {
+            standingCollider.enabled = true;
+            speed = originalSpeed;
+        }
+
     }
 
     private void FixedUpdate()
@@ -79,22 +107,40 @@ public class PlayerController : MonoBehaviour
         {
             coyoteTimeCounter = coyoteTime;
             doubleJump = true;
+            animator.SetBool("isJumping", false);
+            longJump = false;
 
         }
         else
         {
             coyoteTimeCounter -= Time.deltaTime;
+            animator.SetBool("isJumping", true);
         }
+
+        if (Input.GetKey(KeyCode.Space) && longJump == false)
+        {
+            animator.SetBool("isJumping", true);
+            longJump = true;
+        }
+
+        if (Input.GetKey(KeyCode.Space) && longJump == true && isGrounded())
+        {
+            animator.SetBool("isJumping", false);
+            longJump = false;
+        }
+
 
         if (Input.GetButtonDown("Jump") && coyoteTimeCounter > 0f)
         {
             playerRB.velocity = new Vector2(playerRB.velocity.x, jumpingPower);
+            animator.SetBool("isJumping", true);
         }
 
         if (Input.GetButtonDown("Jump") && !isGrounded() && doubleJump)
         {
             playerRB.velocity = new Vector2(playerRB.velocity.x, jumpingPower);
             doubleJump = false;
+            animator.SetBool("isJumping", true);
         }
 
 
@@ -122,8 +168,32 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
+    }
+
+    void isMoving()
+    {
+        bool isMoving = Input.GetButton("Horizontal");
+        if (animator.GetBool("IsMoving") != isMoving)
+        {
+            animator.SetBool("IsMoving", isMoving);
+        }
+    }
+
+    private void Crouch()
+    {
+        if (isGrounded())
+        {
+            if (Input.GetKeyDown(KeyCode.S) || Physics2D.OverlapCircle(overheadCheckColldier.position, 0.2f, groundLayer))
+            {
+                isCrouching = true;
+            }
+            else if (!Input.GetKey(KeyCode.S) && !Physics2D.OverlapCircle(overheadCheckColldier.position, 0.2f, groundLayer))
 
 
+                isCrouching = false;
+        }
 
     }
+
 }
+
