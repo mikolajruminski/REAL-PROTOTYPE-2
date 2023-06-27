@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     Animator animator;
 
+    private weapon weapon;
+
     //Crouching
 
     [SerializeField] Collider2D standingCollider;
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        weapon = GetComponent<weapon>();
     }
 
     // Update is called once per frame
@@ -74,15 +77,7 @@ public class PlayerController : MonoBehaviour
             speed = originalSpeed;
         }
 
-        if (isCrouching && horizontal != 0) 
-        {
-            animator.SetBool("isMovingCrouching", true);
-            animator.SetBool("isCrawling", !isCrouching);
-        }
-        else 
-        {
-            animator.SetBool("isMovingCrouching", false);
-        }
+
 
     }
 
@@ -100,9 +95,7 @@ public class PlayerController : MonoBehaviour
         if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
         {
             isFacingRight = !isFacingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1f;
-            transform.localScale = localScale;
+            transform.Rotate(0, 180f, 0);
         }
     }
 
@@ -201,6 +194,16 @@ public class PlayerController : MonoBehaviour
             else if (!Input.GetKeyUp(KeyCode.S) && !Physics2D.OverlapCircle(overheadCheckColldier.position, 0.2f, groundLayer))
 
                 isCrouching = false;
+        }
+
+        if (isCrouching && horizontal != 0)
+        {
+            animator.SetBool("isMovingCrouching", true);
+            animator.SetBool("isCrawling", !isCrouching);
+        }
+        else
+        {
+            animator.SetBool("isMovingCrouching", false);
         }
 
     }
