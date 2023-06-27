@@ -50,9 +50,9 @@ public class PlayerController : MonoBehaviour
         }
 
         animator.SetFloat("JumpingVelocity", playerRB.velocity.y);
-        Debug.Log(playerRB.velocity.y);
         horizontal = Input.GetAxisRaw("Horizontal");
         animator.SetFloat("Horizontal input", horizontal);
+        animator.SetBool("isCrawling", isCrouching);
         isMoving();
         Flip();
         Jump();
@@ -72,6 +72,16 @@ public class PlayerController : MonoBehaviour
         {
             standingCollider.enabled = true;
             speed = originalSpeed;
+        }
+
+        if (isCrouching && horizontal != 0) 
+        {
+            animator.SetBool("isMovingCrouching", true);
+            animator.SetBool("isCrawling", !isCrouching);
+        }
+        else 
+        {
+            animator.SetBool("isMovingCrouching", false);
         }
 
     }
@@ -115,6 +125,7 @@ public class PlayerController : MonoBehaviour
         {
             coyoteTimeCounter -= Time.deltaTime;
             animator.SetBool("isJumping", true);
+            animator.SetBool("isCrawling", false);
         }
 
         if (Input.GetKey(KeyCode.Space) && longJump == false)
@@ -183,12 +194,11 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded())
         {
-            if (Input.GetKeyDown(KeyCode.S) || Physics2D.OverlapCircle(overheadCheckColldier.position, 0.2f, groundLayer))
+            if (Input.GetKey(KeyCode.S) || Physics2D.OverlapCircle(overheadCheckColldier.position, 0.2f, groundLayer))
             {
                 isCrouching = true;
             }
-            else if (!Input.GetKey(KeyCode.S) && !Physics2D.OverlapCircle(overheadCheckColldier.position, 0.2f, groundLayer))
-
+            else if (!Input.GetKeyUp(KeyCode.S) && !Physics2D.OverlapCircle(overheadCheckColldier.position, 0.2f, groundLayer))
 
                 isCrouching = false;
         }
