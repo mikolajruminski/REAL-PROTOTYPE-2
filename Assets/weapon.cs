@@ -25,7 +25,8 @@ public class weapon : MonoBehaviour
     IEnumerator shootBullets() 
     {
         Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
-        animator.SetTrigger("isShooting");
+        animator.SetBool("isShooting", true);
         yield return new WaitForSeconds(0.5f);
+        animator.SetBool("isShooting", false);
     }
 }

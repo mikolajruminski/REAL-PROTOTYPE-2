@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
         if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
         {
             isFacingRight = !isFacingRight;
-            transform.Rotate(0, 180f, 0);
+            transform.Rotate(0, 180f, 0, Space.World);
         }
     }
 

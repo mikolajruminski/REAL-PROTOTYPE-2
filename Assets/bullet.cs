@@ -10,11 +10,18 @@ public class bullet : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        StartCoroutine(destroySelf());
     }
 
     // Update is called once per frame
     void Update()
     {
         rb.velocity = transform.right * speed;
+    }
+
+    IEnumerator destroySelf() 
+    {
+        yield return new WaitForSeconds(2);
+        Destroy(gameObject);
     }
 }
