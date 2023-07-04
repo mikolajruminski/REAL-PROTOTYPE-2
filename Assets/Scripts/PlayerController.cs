@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform overheadCheckColldier;
     [SerializeField] private LayerMask groundLayer;
     Animator animator;
+    [SerializeField] ParticleSystem dust;
 
     private weapon weapon;
 
@@ -36,6 +37,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashingDuration = 0.2f;
     private float dashingCooldown = 2f;
     [SerializeField] private TrailRenderer tr;
+
+    //playerHealth
+
+    public int playerHealth = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -95,7 +100,9 @@ public class PlayerController : MonoBehaviour
         if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
         {
             isFacingRight = !isFacingRight;
-            transform.Rotate(0, 180f, 0, Space.World);
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
         }
     }
 
@@ -206,6 +213,11 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isMovingCrouching", false);
         }
 
+    }
+
+    void createDust() 
+    {
+        dust.Play();
     }
 
 }
