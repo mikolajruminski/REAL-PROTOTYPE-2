@@ -10,11 +10,11 @@ public class PlayerController : MonoBehaviour
     float crouchSpeedModifier = 6f;
     [SerializeField] float jumpingPower = 16f;
     private bool isFacingRight = true;
-    [SerializeField] Rigidbody2D playerRB;
+    [SerializeField] public Rigidbody2D playerRB;
     [SerializeField] private Transform groundCheck;
     [SerializeField] Transform overheadCheckColldier;
     [SerializeField] private LayerMask groundLayer;
-    Animator animator;
+    public Animator animator;
     [SerializeField] ParticleSystem dust;
 
     private weapon weapon;
@@ -38,10 +38,6 @@ public class PlayerController : MonoBehaviour
     private float dashingCooldown = 2f;
     [SerializeField] private TrailRenderer tr;
 
-    //playerHealth
-
-    public int playerHealth = 3;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -52,34 +48,38 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isDashing)
+        if (GameManager.Instance.isGameActive)
         {
-            return;
-        }
+            if (isDashing)
+            {
+                return;
+            }
 
-        animator.SetFloat("JumpingVelocity", playerRB.velocity.y);
-        horizontal = Input.GetAxisRaw("Horizontal");
-        animator.SetFloat("Horizontal input", horizontal);
-        animator.SetBool("isCrawling", isCrouching);
-        isMoving();
-        Flip();
-        Jump();
-        Crouch();
+            animator.SetFloat("JumpingVelocity", playerRB.velocity.y);
+            horizontal = Input.GetAxisRaw("Horizontal");
+            animator.SetFloat("Horizontal input", horizontal);
+            animator.SetBool("isCrawling", isCrouching);
+            isMoving();
+            Flip();
+            Jump();
+            Crouch();
 
-        if (canDash && Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            StartCoroutine(Dash());
-        }
+            if (canDash && Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                StartCoroutine(Dash());
+            }
 
-        if (isCrouching)
-        {
-            standingCollider.enabled = false;
-            speed = crouchSpeedModifier;
-        }
-        else
-        {
-            standingCollider.enabled = true;
-            speed = originalSpeed;
+            if (isCrouching)
+            {
+                standingCollider.enabled = false;
+                speed = crouchSpeedModifier;
+            }
+            else
+            {
+                standingCollider.enabled = true;
+                speed = originalSpeed;
+            }
+
         }
 
 
@@ -88,11 +88,16 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDashing)
+        if (GameManager.Instance.isGameActive)
         {
-            return;
+            if (isDashing)
+            {
+                return;
+            }
+
+            playerRB.velocity = new Vector2(horizontal * speed, playerRB.velocity.y);
         }
-        playerRB.velocity = new Vector2(horizontal * speed, playerRB.velocity.y);
+
     }
 
     void Flip()
@@ -215,7 +220,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void createDust() 
+    void createDust()
     {
         dust.Play();
     }
