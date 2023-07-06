@@ -96,5 +96,6 @@ public class GameManager : MonoBehaviour
     public void takeDamage(int damage)
     {
         playerHealth -= damage;
+        playerController.animator.SetTrigger("takeDamage");
     }
 }

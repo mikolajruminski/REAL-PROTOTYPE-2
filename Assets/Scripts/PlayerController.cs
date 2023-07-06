@@ -38,11 +38,17 @@ public class PlayerController : MonoBehaviour
     private float dashingCooldown = 2f;
     [SerializeField] private TrailRenderer tr;
 
+    //color changing 
+    SpriteRenderer spr;
+    Color crColor;
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         weapon = GetComponent<weapon>();
+        spr = GetComponent<SpriteRenderer>();
+        crColor = spr.color;
     }
 
     // Update is called once per frame
@@ -224,6 +230,7 @@ public class PlayerController : MonoBehaviour
     {
         dust.Play();
     }
+
 
 }
 

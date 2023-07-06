@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4882619319383095433}
   - component: {fileID: 3575969360471212350}
   m_Layer: 0
-  m_Name: bomb
+  m_Name: bombDOWN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,6 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33315c8e35d34a240b2963d46f08ce9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 8
 --- !u!95 &4882619319383095433
 Animator:
   serializedVersion: 5
