@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1047305239}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.55, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -203,7 +203,11 @@ MonoBehaviour:
   healthPoints: 3
   deathAnimation: {fileID: 3073437113257272956, guid: f2b566b3e62e84e42bb3063a66ac479e, type: 3}
   obstacleCheck: {fileID: 2091955080}
+  groundCheck: {fileID: 1047305240}
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
-  movementSpeed: 7.34
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  movementSpeed: 4.86

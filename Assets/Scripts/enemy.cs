@@ -10,8 +10,11 @@ public class enemy : MonoBehaviour
     Rigidbody2D rb;
     Color crColor;
 
+    //collision check
     [SerializeField] Transform obstacleCheck;
+    [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask wallLayer;
+    [SerializeField] LayerMask groundLayer;
 
     //moving
     [SerializeField] float movementSpeed = 3f;
@@ -25,15 +28,15 @@ public class enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         crColor = spr.color;
         localScale = transform.localScale;
-        dirX = Random.Range(-1, 1);
+        randomDirX();
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(dirX);
         changeDirection();
         flipSprite();
-        obstacleChecking();
     }
 
     void FixedUpdate()
@@ -59,15 +62,21 @@ public class enemy : MonoBehaviour
         spr.color = crColor;
     }
 
-    bool obstacleChecking()
+    bool collisionChecking(Transform checkPoint)
     {
-        return Physics2D.OverlapCircle(obstacleCheck.position, 0.2f);
+        return Physics2D.OverlapCircle(checkPoint.position, 0.2f);
     }
 
     void changeDirection()
     {
-        if (obstacleChecking())
+        if (collisionChecking(obstacleCheck))
         {
+            StartCoroutine(waitWhenColliding());
+            dirX *= -1;
+        }
+        else if (!collisionChecking(groundCheck))
+        {
+            StartCoroutine(waitWhenColliding());
             dirX *= -1;
         }
     }
@@ -88,5 +97,25 @@ public class enemy : MonoBehaviour
             localScale.x *= -1;
             transform.localScale = localScale;
         }
+    }
+
+    int randomDirX()
+    {
+        dirX = Random.Range(-1, 2);
+
+        if (dirX == 0)
+        {
+            dirX += 1;
+        }
+
+        return dirX;
+    }
+
+    IEnumerator waitWhenColliding()
+    {
+        float orgMov = movementSpeed;
+        movementSpeed = 0;
+        yield return new WaitForSeconds(2);
+        movementSpeed = orgMov;
     }
 }
