@@ -9,6 +9,7 @@ public class enemy : MonoBehaviour
     SpriteRenderer spr;
     Rigidbody2D rb;
     Color crColor;
+    Transform playerPosition;
 
     //collision check
     [SerializeField] Transform obstacleCheck;
@@ -34,7 +35,6 @@ public class enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(dirX);
         changeDirection();
         flipSprite();
     }
@@ -115,7 +115,27 @@ public class enemy : MonoBehaviour
     {
         float orgMov = movementSpeed;
         movementSpeed = 0;
-        yield return new WaitForSeconds(2);
+        int secondsCount = Random.Range(1, 5);
+        yield return new WaitForSeconds(secondsCount);
         movementSpeed = orgMov;
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.GetComponent<PlayerController>()) 
+        {
+            var player = other.gameObject.GetComponent<PlayerController>();
+            GameManager.Instance.takeDamage(1);
+            player.knockbackCounter = player.knockbackLength;
+            if (other.transform.position.x < transform.position.x) 
+            {
+                player.knockbackFromRight = true;
+            }
+            else 
+            {
+                player.knockbackFromRight = false;
+            }
+        }
+
     }
 }

@@ -38,6 +38,13 @@ public class PlayerController : MonoBehaviour
     private float dashingCooldown = 2f;
     [SerializeField] private TrailRenderer tr;
 
+    //knockback effect
+
+    [SerializeField] public float knockback;
+    [SerializeField] public float knockbackLength;
+    [SerializeField] public float knockbackCounter;
+    [SerializeField] public bool knockbackFromRight;
+
     //color changing 
     SpriteRenderer spr;
     Color crColor;
@@ -87,9 +94,6 @@ public class PlayerController : MonoBehaviour
             }
 
         }
-
-
-
     }
 
     private void FixedUpdate()
@@ -100,8 +104,23 @@ public class PlayerController : MonoBehaviour
             {
                 return;
             }
+            if (knockbackCounter <= 0)
+            {
+                playerRB.velocity = new Vector2(horizontal * speed, playerRB.velocity.y);
+            }
+            else
+            {
+                if (knockbackFromRight)
+                {
+                    playerRB.velocity = new Vector2(-knockback, knockback/2);
+                }
+                else if (!knockbackFromRight)
+                {
+                    playerRB.velocity = new Vector2(knockback, knockback/2);
+                }
+                knockbackCounter -= Time.deltaTime;
+            }
 
-            playerRB.velocity = new Vector2(horizontal * speed, playerRB.velocity.y);
         }
 
     }

@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] PlayerController playerController;
 
     public bool isGameActive = true;
+    public bool canGetDamaged = true;
 
     //player related
     public bool hasWeapon = false;
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         setPlayerHP();
         playerDeath();
 
@@ -68,7 +69,7 @@ public class GameManager : MonoBehaviour
                 hearts[i].sprite = emptyHeart;
             }
 
-            if (playerHealth == 0) 
+            if (playerHealth == 0)
             {
                 hearts[i].sprite = emptyHeart;
             }
@@ -89,13 +90,26 @@ public class GameManager : MonoBehaviour
         {
             playerController.animator.SetTrigger("playerDeath");
             isGameActive = false;
-            playerController.playerRB.isKinematic = true;
+            playerController.playerRB.velocity = new Vector2(0, 0);
+
         }
     }
 
     public void takeDamage(int damage)
     {
-        playerHealth -= damage;
-        playerController.animator.SetTrigger("takeDamage");
+        if (canGetDamaged)
+        {
+            playerHealth -= damage;
+            playerController.animator.SetTrigger("takeDamage");
+        }
+        StartCoroutine(damageCountdown());
+
+    }
+
+    public IEnumerator damageCountdown()
+    {
+        canGetDamaged = false;
+        yield return new WaitForSeconds(0.5f);
+        canGetDamaged = true;
     }
 }

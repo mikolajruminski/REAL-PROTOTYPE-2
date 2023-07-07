@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 35331801343915260}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 11.71, y: 0.43, z: -0.02580785}
   m_LocalScale: {x: 2.1625, y: 1.175, z: 1}
   m_ConstrainProportionsScale: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bomb: {fileID: 1458157295141340411, guid: 19aac2349c51f2f498420c472f25f578, type: 3}
   spawnPoint: {fileID: 3327143212592147006}
-  repeatRate: 5
+  repeatRate: 1.5
 --- !u!1 &3327143212592147001
 GameObject:
   m_ObjectHideFlags: 0
